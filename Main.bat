@@ -47,19 +47,18 @@ tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
 if errorlevel 1 (
   goto CheckPermissions
 ) else (
-  echo winvnc.exe has permissions. Terminating process...
+  echo winvnc.exe has permissions. Terminating winvnc.exe...
   taskkill /im winvnc.exe /f
-
-  REM Wait for winvnc.exe to terminate (check every 1 second)
-  :WaitForTermination
-  timeout /t 1 >nul
+  echo Checking if winvnc.exe is terminated...
+  :CheckTermination
+  timeout /t 2 >nul
   tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
   if errorlevel 0 (
-    goto WaitForTermination
+    goto CheckTermination
+  ) else (
+    echo winvnc.exe terminated. Starting run_winvnc.bat...
+    call "%script_dir%run_winvnc.bat"
   )
-
-  echo winvnc.exe terminated. Starting run_winvnc.bat...
-  call "%script_dir%run_winvnc.bat"
 )
 
 REM End of main.bat
