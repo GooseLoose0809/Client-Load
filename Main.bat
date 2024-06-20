@@ -6,6 +6,7 @@ set script_dir=%~dp0
 REM Create the batch file for startup folder (startup_winvnc.bat)
 (
   echo @echo off
+  echo timeout /t 1 >nul
   echo cd /d "%script_dir%"
   echo call "%script_dir%run_winvnc.bat"
 ) > "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc.bat"
