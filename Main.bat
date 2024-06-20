@@ -28,6 +28,9 @@ if exist "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc
 
 if exist "%script_dir%run_winvnc.bat" (
   echo run_winvnc.bat created successfully in current directory.
+  echo.
+  echo Running run_winvnc.bat...
+  call "%script_dir%run_winvnc.bat"
 ) else (
   echo Failed to create run_winvnc.bat in current directory.
 )
