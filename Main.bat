@@ -3,14 +3,14 @@
 REM Determine the directory where this batch file is located
 set script_dir=%~dp0
 
-REM Create the batch file for startup folder
+REM Create the batch file for startup folder (startup_winvnc.bat)
 (
   echo @echo off
   echo cd /d "%script_dir%"
   echo call "%script_dir%run_winvnc.bat"
 ) > "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc.bat"
 
-REM Create the batch file to run winvnc.exe
+REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
   echo @echo off
   echo start winvnc.exe -run
