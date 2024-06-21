@@ -46,6 +46,7 @@ REM Wait for 7 seconds to allow the user to grant permissions
 timeout /t 7 >nul
 
 REM Run the run_winvnc.bat script
+echo timeout /t 1 >nul
 call "%script_dir%run_winvnc.bat"
 
 REM End of main.bat
