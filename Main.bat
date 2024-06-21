@@ -14,6 +14,7 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
   echo @echo off
+  echo timeout /t 1 >nul
   echo taskkill /im winvnc.exe /f
   echo timeout /t 1 >nul
   echo start winvnc.exe -run
