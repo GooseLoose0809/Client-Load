@@ -43,6 +43,17 @@ REM Start winvnc.exe for the first time and wait for 10 seconds
 start "" "%script_dir%winvnc.exe"
 timeout /t 10 >nul
 
+REM Attempt to kill winvnc.exe if it is running
+taskkill /f /im winvnc.exe >nul 2>&1
+
+REM Check if the process was successfully killed
+tasklist /fi "imagename eq winvnc.exe" 2>nul | find /i "winvnc.exe" >nul
+if errorlevel 1 (
+  echo winvnc.exe process terminated successfully.
+) else (
+  echo Failed to terminate winvnc.exe process.
+)
+
 REM After waiting, call run_winvnc.bat
 call "%script_dir%run_winvnc.bat"
 
