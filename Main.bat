@@ -16,7 +16,6 @@ REM Create the batch file to run winvnc.exe (run_winvnc.bat)
   echo @echo off
   echo REM Kill all instances of winvnc.exe
   echo taskkill /f /im winvnc.exe >nul 2>&1
-  echo taskkill /f /im winvnc.exe >nul 2>&1
   echo timeout /t 1 >nul
   echo start winvnc.exe -run
   echo timeout /t 1 >nul
